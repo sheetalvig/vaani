@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vaani - Complete App</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #fff7ed 0%, #fef3c7 100%);
+            min-height: 100vh;
+        }
+        .container { max-width: 500px; margin: 0 auto; padding: 20px; }
+        .card { 
+            background: white; 
+            border-radius: 20px; 
+            padding: 30px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .header {
+            background: linear-gradient(135deg, #f97316 0%, #f59e0b 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 0;
+            margin: 0 0 20px 0;
+        }
+        h1 { font-size: 2.5rem; margin-bottom: 10px; text-align: center; }
+        h2 { font-size: 1.5rem; margin-bottom: 15px; }
+        .emoji { font-size: 4rem; text-align: center; margin: 20px 0; }
+        input, select, button, textarea {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: inherit;
+        }
+        textarea { min-height: 100px; resize: vertical; }
+        button {
+            background: linear-gradient(135deg, #f97316 0%, #f59e0b 100%);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+        }
+        button:hover { opacity: 0.9; }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+        .grid-item {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border: 2px solid #f3f4f6;
+        }
+        .grid-item:hover { transform: scale(1.05); box-shadow: 0 6px 12px rgba(0,0,0,0.15); }
+        .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .stat-box {
+            background: rgba(255,255,255,0.2);
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .back-btn {
+            background: transparent;
+            color: #f97316;
+            border: none;
+            font-weight: bold;
+            text-align: left;
+            width: auto;
+            padding: 10px 0;
+            margin-bottom: 20px;
+        }
+        .expense-item {
+            background: #f9fafb;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 2px solid #e5e7eb;
+        }
+        .expense-item:hover { border-color: #f97316; }
+        .delete-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .category-btn {
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #e5e7eb;
+            background: white;
+            cursor: pointer;
+            text-align: center;
+        }
+        .category-btn.selected {
+            border-color: #f97316;
+            background: #fff7ed;
+        }
+        .lesson-card {
+            background: #eff6ff;
+            border: 2px solid #bfdbfe;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 15px 0;
+        }
+        .quiz-option {
+            background: white;
+            border: 2px solid #d1d5db;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: left;
+        }
+        .quiz-option.selected {
+            border-color: #f97316;
+            background: #fff7ed;
+        }
+        .chat-container {
+            height: 400px;
+            overflow-y: auto;
+            padding: 15px;
+            background: #f9fafb;
+            border-radius: 15px;
+            margin-bottom: 15px;
+        }
+        .chat-message {
+            margin-bottom: 15px;
+            display: flex;
+        }
+        .chat-message.user {
+            justify-content: flex-end;
+        }
+        .chat-bubble {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 15px;
+            line-height: 1.4;
+        }
+        .chat-bubble.user {
+            background: #f97316;
+            color: white;
+        }
+        .chat-bubble.bot {
+            background: white;
+            border: 2px solid #e5e7eb;
+        }
+        .chat-input-container {
+            display: flex;
+            gap: 10px;
+        }
+        .chat-input-container input {
+            flex: 1;
+            margin: 0;
+        }
+        .chat-input-container button {
+            width: auto;
+            padding: 15px 25px;
+            margin: 0;
+        }
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 2px solid #e5e7eb;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            padding: 10px;
+            box-shadow: 0 -4px 6px rgba(0,0,0,0.05);
+        }
+        .nav-item {
+            text-align: center;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 10px;
+        }
+        .nav-item.active {
+            background: #fff7ed;
+            color: #f97316;
+        }
+        .pb-nav { padding-bottom: 80px; }
+        .hidden { display: none; }
+        .alert-box {
+            background: #fef2f2;
+            border: 2px solid #fecaca;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        .success-box {
+            background: #f0fdf4;
+            border: 2px solid #86efac;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        .info-box {
+            background: #eff6ff;
+            border: 2px solid #bfdbfe;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="app"></div>
+
+    <script>
+        const translations = {
+            en: {
+                app: 'Vaani', tagline: 'Your Financial Companion', welcome: 'Welcome',
+                start: 'Start Learning!', name: 'Enter your name', home: 'Home',
+                spend: 'My Money', learn: 'Learn', help: 'Help', ask: 'Chat',
+                back: '← Back', pts: 'Points', level: 'Level', streak: 'Streak',
+                next: 'Next →', prev: '← Previous', quiz: 'Take Quiz', score: 'Score',
+                add: '+ Add Expense', food: 'Food', transport: 'Transport',
+                bills: 'Bills', shopping: 'Shopping', medicine: 'Medicine', fun: 'Fun',
+                amount: 'Amount', category: 'Category', save: 'Save', cancel: 'Cancel',
+                delete: 'Delete', total: 'Total Spent', budget: 'Budget', remaining: 'Remaining',
+                crisis: 'Crisis Help', describe: 'Describe your situation', submit: 'Get Help',
+                chat: 'AI Assistant', type: 'Type your question...', send: 'Send',
+                noExpenses: 'No expenses yet. Start tracking!',
+                whatBuy: 'What did you buy?', howMuch: 'How much did you spend?',
+                lesson: 'Lesson', of: 'of', lessons: 'lessons'
+            },
+            hi: {
+                app: 'वाणी', tagline: 'आपका वित्तीय साथी', welcome: 'स्वागत',
+                start: 'सीखना शुरू करें!', name: 'अपना नाम दर्ज करें', home: 'होम',
+                spend: 'मेरे पैसे', learn: 'सीखें', help: 'मदद', ask: 'चैट',
+                back: '← वापस', pts: 'अंक', level: 'लेवल', streak: 'स्ट्रीक',
+                next: 'आगे →', prev: '← पिछला', quiz: 'क्विज़', score: 'स्कोर',
+                add: '+ खर्च जोड़ें', food: 'खाना', transport: 'यातायात',
+                bills: 'बिल', shopping: 'खरीदारी', medicine: 'दवाई', fun: 'मनोरंजन',
+                amount: 'रकम', category: 'श्रेणी', save: 'सेव', cancel: 'रद्द',
+                delete: 'हटाएं', total: 'कुल खर्च', budget: 'बजट', remaining: 'बचा',
+                crisis: 'संकट मदद', describe: 'अपनी स्थिति बताएं', submit: 'मदद पाएं',
+                chat: 'AI सहायक', type: 'अपना सवाल लिखें...', send: 'भेजें',
+                noExpenses: 'अभी कोई खर्च नहीं।',
+                whatBuy: 'क्या खरीदा?', howMuch: 'कितना खर्च?',
+                lesson: 'पाठ', of: 'में से', lessons: 'पाठ'
+            },
+            kn: {
+                app: 'ವಾಣಿ', tagline: 'ನಿಮ್ಮ ಹಣಕಾಸು ಸಹಚರ', welcome: 'ಸ್ವಾಗತ',
+                start: 'ಕಲಿಕೆ ಪ್ರಾರಂಭಿಸಿ!', name: 'ನಿಮ್ಮ ಹೆಸರು', home: 'ಮನೆ',
+                spend: 'ನನ್ನ ಹಣ', learn: 'ಕಲಿಯಿರಿ', help: 'ಸಹಾಯ', ask: 'ಚಾಟ್',
+                back: '← ಹಿಂದೆ', pts: 'ಅಂಕಗಳು', level: 'ಮಟ್ಟ', streak: 'ಸರಣಿ',
+                next: 'ಮುಂದೆ →', prev: '← ಹಿಂದಿನ', quiz: 'ಕ್ವಿಜ್', score: 'ಸ್ಕೋರ್',
+                add: '+ ಖರ್ಚು ಸೇರಿಸಿ', food: 'ಆಹಾರ', transport: 'ಸಾರಿಗೆ',
+                bills: 'ಬಿಲ್ಲುಗಳು', shopping: 'ಶಾಪಿಂಗ್', medicine: 'ಔಷಧ', fun: 'ಮನರಂಜನೆ',
+                amount: 'ಮೊತ್ತ', category: 'ವರ್ಗ', save: 'ಉಳಿಸಿ', cancel: 'ರದ್ದು',
+                delete: 'ಅಳಿಸಿ', total: 'ಒಟ್ಟು ಖರ್ಚು', budget: 'ಬಜೆಟ್', remaining: 'ಉಳಿದಿದೆ',
+                crisis: 'ಬಿಕ್ಕಟ್ಟು ಸಹಾಯ', describe: 'ನಿಮ್ಮ ಪರಿಸ್ಥಿತಿ', submit: 'ಸಹಾಯ ಪಡೆಯಿರಿ',
+                chat: 'AI ಸಹಾಯಕ', type: 'ನಿಮ್ಮ ಪ್ರಶ್ನೆ...', send: 'ಕಳುಹಿಸಿ',
+                noExpenses: 'ಇನ್ನೂ ಯಾವುದೇ ಖರ್ಚುಗಳಿಲ್ಲ!',
+                whatBuy: 'ಏನು ಕೊಂಡಿದ್ದೀರಿ?', howMuch: 'ಎಷ್ಟು?',
+                lesson: 'ಪಾಠ', of: 'ರ', lessons: 'ಪಾಠಗಳು'
+            },
+            ta: {
+                app: 'வாணி', tagline: 'உங்கள் நிதி துணை', welcome: 'வரவேற்பு',
+                start: 'கற்க தொடங்குங்கள்!', name: 'உங்கள் பெயர்', home: 'முகப்பு',
+                spend: 'என் பணம்', learn: 'கற்றுக்கொள்', help: 'உதவி', ask: 'அரட்டை',
+                back: '← பின்', pts: 'புள்ளிகள்', level: 'நிலை', streak: 'தொடர்',
+                next: 'அடுத்தது →', prev: '← முந்தைய', quiz: 'வினா', score: 'மதிப்பெண்',
+                add: '+ செலவு சேர்', food: 'உணவு', transport: 'போக்குவரத்து',
+                bills: 'பில்கள்', shopping: 'ஷாப்பிங்', medicine: 'மருந்து', fun: 'பொழுதுபோக்கு',
+                amount: 'தொகை', category: 'வகை', save: 'சேமி', cancel: 'ரத்து',
+                delete: 'நீக்கு', total: 'மொத்த செலவு', budget: 'பட்ஜெட்', remaining: 'மீதம்',
+                crisis: 'நெருக்கடி உதவி', describe: 'உங்கள் நிலைமை', submit: 'உதவி பெறுங்கள்',
+                chat: 'AI உதவியாளர்', type: 'உங்கள் கேள்வி...', send: 'அனுப்பு',
+                noExpenses: 'இன்னும் செலவுகள் இல்லை!',
+                whatBuy: 'என்ன வாங்கினீர்கள்?', howMuch: 'எவ்வளவு?',
+                lesson: 'பாடம்', of: 'இல்', lessons: 'பாடங்கள்'
+            },
+            te: {
+                app: 'వాణి', tagline: 'మీ ఆర్థిక సహచరుడు', welcome: 'స్వాగతం',
+                start: 'నేర్చుకోండి!', name: 'మీ పేరు', home: 'హోమ్',
+                spend: 'నా డబ్బు', learn: 'నేర్చుకోండి', help: 'సహాయం', ask: 'చాట్',
+                back: '← వెనక్కి', pts: 'పాయింట్లు', level: 'స్థాయి', streak: 'పరంపర',
+                next: 'తర్వాత →', prev: '← మునుపటి', quiz: 'క్విజ్', score: 'స్కోర్',
+                add: '+ ఖర్చు జోడించండి', food: 'ఆహారం', transport: 'రవాణా',
+                bills: 'బిల్లులు', shopping: 'షాపింగ్', medicine: 'మందులు', fun: 'వినోదం',
+                amount: 'మొత్తం', category: 'వర్గం', save: 'సేవ్', cancel: 'రద్దు',
+                delete: 'తొలగించు', total: 'మొత్తం ఖర్చు', budget: 'బడ్జెట్', remaining: 'మిగిలింది',
+                crisis: 'సంక్షోభ సహాయం', describe: 'మీ పరిస్థితి', submit: 'సహాయం పొందండి',
+                chat: 'AI సహాయకుడు', type: 'మీ ప్రశ్న...', send: 'పంపండి',
+                noExpenses: 'ఇంకా ఖర్చులు లేవు!',
+                whatBuy: 'ఏమి కొన్నారు?', howMuch: 'ఎంత?',
+                lesson: 'పాఠం', of: 'లో', lessons: 'పాఠాలు'
+            }
+        };
+
+        // Lessons with full multilingual content
+        const getLessonsData = (lang) => {
+            const lessons = {
+                en: {
+                    modules: [
+                        {
+                            id: 1, icon: '🏦', title: 'Banking Basics',
+                            lessons: [
+                                { title: 'Opening Account', content: 'To open bank account: Need Aadhaar + PAN card. Visit any bank branch or use mobile app. Takes 10-15 minutes! Your money earns 3-4% interest yearly. Government insures up to ₹5 lakh - safe!' },
+                                { title: 'Types of Accounts', content: 'Savings: 3-4% interest, daily use. Current: Business, no interest. Fixed Deposit: Lock 1-5 years, earn 6-7%!' },
+                                { title: 'ATM & Debit Card', content: 'ATM = withdraw cash 24/7. NEVER share PIN! Cover keypad. Free: 5 transactions/month own bank, 3 others.' },
+                                { title: 'Net Banking Safety', content: 'NEVER share OTP, password, CVV - even to bank! Always logout. If someone calls about "KYC update" - it\'s SCAM!' }
+                            ],
+                            quiz: [
+                                { q: 'Documents for account?', options: ['Aadhaar + PAN', 'Only Aadhaar', 'Passport'], correct: 0 },
+                                { q: 'Savings interest?', options: ['3-4%', '10%', '0%'], correct: 0 },
+                                { q: 'Share OTP?', options: ['Never!', 'To bank only', 'Yes'], correct: 0 }
+                            ]
+                        },
+                        {
+                            id: 2, icon: '💰', title: 'Smart Savings',
+                            lessons: [
+                                { title: '50-30-20 Rule', content: '50% needs (rent, food), 30% wants (fun), 20% savings. ₹20k salary = ₹10k needs + ₹6k wants + ₹4k savings!' },
+                                { title: 'Emergency Fund', content: 'Save 6 months expenses. ₹15k/month spend = ₹90k fund. Protects from expensive loans!' },
+                                { title: 'Goal-Based Saving', content: 'Want bike in 2 years? ₹80k ÷ 24 months = save ₹3,334/month. Write goals!' },
+                                { title: 'Small Savings Tricks', content: '₹100/day = ₹36,500/year! Cut 1 outside meal/week = save ₹1,000/month. Small adds up!' }
+                            ],
+                            quiz: [
+                                { q: '50% for?', options: ['Needs', 'Wants', 'Savings'], correct: 0 },
+                                { q: 'Emergency fund covers?', options: ['6 months', '1 week', '10 years'], correct: 0 }
+                            ]
+                        }
+                    ]
+                },
+                hi: {
+                    modules: [
+                        {
+                            id: 1, icon: '🏦', title: 'बैंकिंग बेसिक्स',
+                            lessons: [
+                                { title: 'खाता खोलना', content: 'बैंक खाता खोलने के लिए: आधार + पैन कार्ड चाहिए। किसी भी बैंक या मोबाइल ऐप से। 10-15 मिनट! आपका पैसा 3-4% ब्याज कमाता है। सरकार ₹5 लाख तक बीमा करती है!' },
+                                { title: 'खातों के प्रकार', content: 'बचत खाता: 3-4% ब्याज, रोज़ इस्तेमाल। चालू खाता: व्यवसाय के लिए। FD: 1-5 साल, 6-7% ब्याज!' },
+                                { title: 'ATM और डेबिट कार्ड', content: 'ATM = 24/7 पैसे निकालें। PIN कभी शेयर न करें! कीपैड ढकें। मुफ्त: 5 लेनदेन/महीना अपने बैंक, 3 अन्य।' },
+                                { title: 'नेट बैंकिंग सुरक्षा', content: 'OTP, पासवर्ड, CVV कभी शेयर न करें - बैंक को भी नहीं! हमेशा लॉगआउट करें। अगर कोई "KYC अपडेट" के लिए फोन करे - यह घोटाला है!' }
+                            ],
+                            quiz: [
+                                { q: 'खाते के लिए दस्तावेज़?', options: ['आधार + पैन', 'केवल आधार', 'पासपोर्ट'], correct: 0 },
+                                { q: 'बचत खाता ब्याज?', options: ['3-4%', '10%', '0%'], correct: 0 },
+                                { q: 'OTP शेयर करें?', options: ['कभी नहीं!', 'बैंक को', 'हाँ'], correct: 0 }
+                            ]
+                        },
+                        {
+                            id: 2, icon: '💰', title: 'स्मार्ट बचत',
+                            lessons: [
+                                { title: '50-30-20 नियम', content: '50% ज़रूरतें (किराया, खाना), 30% इच्छाएं (मज़ा), 20% बचत। ₹20k वेतन = ₹10k ज़रूरतें + ₹6k इच्छाएं + ₹4k बचत!' },
+                                { title: 'आपातकालीन फंड', content: '6 महीने का खर्च बचाएं। ₹15k/महीना खर्च = ₹90k फंड। महंगे लोन से बचाता है!' },
+                                { title: 'लक्ष्य-आधारित बचत', content: '2 साल में बाइक चाहिए? ₹80k ÷ 24 महीने = ₹3,334/महीना बचत। लक्ष्य लिखें!' },
+                                { title: 'छोटी बचत के तरीके', content: '₹100/दिन = ₹36,500/साल! 1 बाहर का खाना कम = ₹1,000/महीना बचत!' }
+                            ],
+                            quiz: [
+                                { q: '50% किसके लिए?', options: ['ज़रूरतें', 'इच्छाएं', 'बचत'], correct: 0 },
+                                { q: 'आपातकालीन फंड?', options: ['6 महीने', '1 हफ्ता', '10 साल'], correct: 0 }
+                            ]
+                        }
+                    ]
+                },
+                kn: {
+                    modules: [
+                        {
+                            id: 1, icon: '🏦', title: 'ಬ್ಯಾಂಕಿಂಗ್ ಮೂಲಭೂತಗಳು',
+                            lessons: [
+                                { title: 'ಖಾತೆ ತೆರೆಯುವುದು', content: 'ಬ್ಯಾಂಕ್ ಖಾತೆ ತೆರೆಯಲು: ಆಧಾರ್ + ಪ್ಯಾನ್ ಕಾರ್ಡ್ ಬೇಕು। ಯಾವುದೇ ಬ್ಯಾಂಕ್ ಅಥವಾ ಮೊಬೈಲ್ ಆ್ಯಪ್. 10-15 ನಿಮಿಷಗಳು! ನಿಮ್ಮ ಹಣ 3-4% ಬಡ್ಡಿ ಗಳಿಸುತ್ತದೆ।' },
+                                { title: 'ಖಾತೆಗಳ ವಿಧಗಳು', content: 'ಉಳಿತಾಯ: 3-4% ಬಡ್ಡಿ, ದೈನಂದಿನ ಬಳಕೆ। ಚಾಲ್ತಿ: ವ್ಯಾಪಾರ. FD: 1-5 ವರ್ಷ, 6-7% ಬಡ್ಡಿ!' },
+                                { title: 'ATM ಮತ್ತು ಡೆಬಿಟ್ ಕಾರ್ಡ್', content: 'ATM = 24/7 ಹಣ ಹಿಂಪಡೆಯಿರಿ। PIN ಹಂಚಿಕೊಳ್ಳಬೇಡಿ! ಕೀಪ್ಯಾಡ್ ಮುಚ್ಚಿರಿ। ಉಚಿತ: 5 ವಹಿವಾಟು/ತಿಂಗಳು।' },
+                                { title: 'ನೆಟ್ ಬ್ಯಾಂಕಿಂಗ್ ಸುರಕ್ಷತೆ', content: 'OTP, ಪಾಸ್‌ವರ್ಡ್, CVV ಹಂಚಿಕೊಳ್ಳಬೇಡಿ! ಯಾವಾಗಲೂ ಲಾಗ್ಔಟ್. "KYC ಅಪ್‌ಡೇಟ್" ಕರೆ = ವಂಚನೆ!' }
+                            ],
+                            quiz: [
+                                { q: 'ಖಾತೆಗೆ ದಾಖಲೆಗಳು?', options: ['ಆಧಾರ್ + ಪ್ಯಾನ್', 'ಆಧಾರ್ ಮಾತ್ರ', 'ಪಾಸ್‌ಪೋರ್ಟ್'], correct: 0 },
+                                { q: 'ಉಳಿತಾಯ ಬಡ್ಡಿ?', options: ['3-4%', '10%', '0%'], correct: 0 },
+                                { q: 'OTP ಹಂಚಿಕೊಳ್ಳಿ?', options: ['ಎಂದಿಗೂ ಇಲ್ಲ!', 'ಬ್ಯಾಂಕ್‌ಗೆ', 'ಹೌದು'], correct: 0 }
+                            ]
+                        },
+                        {
+                            id: 2, icon: '💰', title: 'ಸ್ಮಾರ್ಟ್ ಉಳಿತಾಯ',
+                            lessons: [
+                                { title: '50-30-20 ನಿಯಮ', content: '50% ಅಗತ್ಯಗಳು, 30% ಇಚ್ಛೆಗಳು, 20% ಉಳಿತಾಯ। ₹20k ಸಂಬಳ = ₹10k ಅಗತ್ಯ + ₹6k ಇಚ್ಛೆ + ₹4k ಉಳಿತಾಯ!' },
+                                { title: 'ತುರ್ತು ನಿಧಿ', content: '6 ತಿಂಗಳ ಖರ್ಚು ಉಳಿಸಿ। ₹15k/ತಿಂಗಳು = ₹90k ನಿಧಿ। ದುಬಾರಿ ಸಾಲದಿಂದ ರಕ್ಷಿಸುತ್ತದೆ!' },
+                                { title: 'ಗುರಿ ಆಧಾರಿತ ಉಳಿತಾಯ', content: '2 ವರ್ಷದಲ್ಲಿ ಬೈಕ್? ₹80k ÷ 24 = ₹3,334/ತಿಂಗಳು ಉಳಿಸಿ!' },
+                                { title: 'ಸಣ್ಣ ಉಳಿತಾಯ ತಂತ್ರಗಳು', content: '₹100/ದಿನ = ₹36,500/ವರ್ಷ! 1 ಹೊರಗಿನ ಊಟ ಕಡಿಮೆ = ₹1,000/ತಿಂಗಳು!' }
+                            ],
+                            quiz: [
+                                { q: '50% ಯಾವುದಕ್ಕೆ?', options: ['ಅಗತ್ಯಗಳು', 'ಇಚ್ಛೆಗಳು', 'ಉಳಿತಾಯ'], correct: 0 },
+                                { q: 'ತುರ್ತು ನಿಧಿ?', options: ['6 ತಿಂಗಳು', '1 ವಾರ', '10 ವರ್ಷ'], correct: 0 }
+                            ]
+                        }
+                    ]
+                },
+                ta: {
+                    modules: [
+                        {
+                            id: 1, icon: '🏦', title: 'வங்கி அடிப்படைகள்',
+                            lessons: [
+                                { title: 'கணக்கு திறத்தல்', content: 'வங்கி கணக்கு திறக்க: ஆதார் + பான் கார்டு தேவை। எந்த வங்கியிலும் அல்லது மொபைல் ஆப். 10-15 நிமிடங்கள்! உங்கள் பணம் 3-4% வட்டி பெறுகிறது।' },
+                                { title: 'கணக்கு வகைகள்', content: 'சேமிப்பு: 3-4% வட்டி, தினசரி பயன்பாடு। நடப்பு: வணிகம். FD: 1-5 வருடம், 6-7% வட்டி!' },
+                                { title: 'ATM மற்றும் டெபிட் கார்டு', content: 'ATM = 24/7 பணம் எடுக்கவும். PIN பகிர்ந்து கொள்ளாதீர்கள்! கீபேடை மூடுங்கள். இலவசம்: 5 பரிவர்த்தனை/மாதம்.' },
+                                { title: 'நெட் வங்கி பாதுகாப்பு', content: 'OTP, கடவுச்சொல், CVV பகிர்ந்து கொள்ளாதீர்கள்! எப்போதும் வெளியேறவும். "KYC புதுப்பிப்பு" அழைப்பு = மோசடி!' }
+                            ],
+                            quiz: [
+                                { q: 'கணக்குக்கு ஆவணங்கள்?', options: ['ஆதார் + பான்', 'ஆதார் மட்டும்', 'பாஸ்போர்ட்'], correct: 0 },
+                                { q: 'சேமிப்பு வட்டி?', options: ['3-4%', '10%', '0%'], correct: 0 },
+                                { q: 'OTP பகிரவா?', options: ['ஒருபோதும் இல்லை!', 'வங்கிக்கு', 'ஆம்'], correct: 0 }
+                            ]
+                        },
+                        {
+                            id: 2, icon: '💰', title: 'ஸ்மார்ட் சேமிப்பு',
+                            lessons: [
+                                { title: '50-30-20 விதி', content: '50% தேவைகள், 30% விருப்பங்கள், 20% சேமிப்பு। ₹20k சம்பளம் = ₹10k தேவை + ₹6k விருப்பம் + ₹4k சேமிப்பு!' },
+                                { title: 'அவசரகால நிதி', content: '6 மாத செலவு சேமிக்கவும். ₹15k/மாதம் = ₹90k நிதி। விலை உயர்ந்த கடனிலிருந்து பாதுகாக்கிறது!' },
+                                { title: 'இலக்கு அடிப்படை சேமிப்பு', content: '2 ஆண்டில் பைக்? ₹80k ÷ 24 = ₹3,334/மாதம் சேமிக்கவும்!' },
+                                { title: 'சிறிய சேமிப்பு தந்திரங்கள்', content: '₹100/நாள் = ₹36,500/ஆண்டு! 1 வெளியே உணவு குறைவு = ₹1,000/மாதம்!' }
+                            ],
+                            quiz: [
+                                { q: '50% எதற்கு?', options: ['தேவைகள்', 'விருப்பங்கள்', 'சேமிப்பு'], correct: 0 },
+                                { q: 'அவசர நிதி?', options: ['6 மாதங்கள்', '1 வாரம்', '10 ஆண்டுகள்'], correct: 0 }
+                            ]
+                        }
+                    ]
+                },
+                te: {
+                    modules: [
+                        {
+                            id: 1, icon: '🏦', title: 'బ్యాంకింగ్ ప్రాథమికాలు',
+                            lessons: [
+                                { title: 'ఖాతా తెరవడం', content: 'బ్యాంక్ ఖాతా తెరవడానికి: ఆధార్ + పాన్ కార్డ్ అవసరం। ఏదైనా బ్యాంక్ లేదా మొబైల్ యాప్. 10-15 నిమిషాలు! మీ డబ్బు 3-4% వడ్డీ సంపాదిస్తుంది।' },
+                                { title: 'ఖాతా రకాలు', content: 'పొదుపు: 3-4% వడ్డీ, రోజువారీ వినియోగం। కరెంట్: వ్యాపారం। FD: 1-5 సంవత్సరాలు, 6-7% వడ్డీ!' },
+                                { title: 'ATM మరియు డెబిట్ కార్డ్', content: 'ATM = 24/7 డబ్బు తీయండి। PIN పంచుకోవద్దు! కీపాడ్ కవర్ చేయండి। ఉచితం: 5 లావాదేవీలు/నెల।' },
+                                { title: 'నెట్ బ్యాంకింగ్ భద్రత', content: 'OTP, పాస్‌వర్డ్, CVV పంచుకోవద్దు! ఎల్లప్పుడూ లాగౌట్. "KYC అప్‌డేట్" కాల్ = స్కామ్!' }
+                            ],
+                            quiz: [
+                                { q: 'ఖాతాకు పత్రాలు?', options: ['ఆధార్ + పాన్', 'ఆధార్ మాత్రమే', 'పాస్‌పోర్ట్'], correct: 0 },
+                                { q: 'పొదుపు వడ్డీ?', options: ['3-4%', '10%', '0%'], correct: 0 },
+                                { q: 'OTP పంచుకోవాలా?', options: ['ఎప్పటికీ కాదు!', 'బ్యాంకుకు', 'అవును'], correct: 0 }
+                            ]
+                        },
+                        {
+                            id: 2, icon: '💰', title: 'స్మార్ట్ పొదుపు',
+                            lessons: [
+                                { title: '50-30-20 నియమం', content: '50% అవసరాలు, 30% కోరికలు, 20% పొదుపు। ₹20k జీతం = ₹10k అవసరం + ₹6k కోరిక + ₹4k పొదుపు!' },
+                                { title: 'అత్యవసర నిధి', content: '6 నెలల ఖర్చు ఆదా చేయండి। ₹15k/నెల = ₹90k నిధి। ఖరీదైన రుణాల నుండి రక్షిస్తుంది!' },
+                                { title: 'లక్ష్య ఆధారిత పొదుపు', content: '2 సంవత్సరాలలో బైక్? ₹80k ÷ 24 = ₹3,334/నెల ఆదా!' },
+                                { title: 'చిన్న పొదుపు ట్రిక్స్', content: '₹100/రోజు = ₹36,500/సంవత్సరం! 1 బయట భోజనం తగ్గించండి = ₹1,000/నెల!' }
+                            ],
+                            quiz: [
+                                { q: '50% దేనికి?', options: ['అవసరాలు', 'కోరికలు', 'పొదుపు'], correct: 0 },
+                                { q: 'అత్యవసర నిధి?', options: ['6 నెలలు', '1 వారం', '10 సంవత్సరాలు'], correct: 0 }
+                            ]
+                        }
+                    ]
+                }
+            };
+            return lessons[lang] || lessons.en;
+        };
+
+        let state = {
+            screen: 'welcome',
+            name: '',
+            lang: 'en',
+            points: 0,
+            level: 1,
+            streak: 3,
+            expenses: [],
+            budget: 12000,
+            currentModule: null,
+            lessonIndex: 0,
+            quizAnswers: {},
+            score: null,
+            showAddExpense: false,
+            newExpense: { category: '', amount: '', icon: '💰' },
+            chatMessages: [],
+            chatInput: ''
+        };
+
+        const categories = [
+            { key: 'food', icon: '🍽️' },
+            { key: 'transport', icon: '🚌' },
+            { key: 'bills', icon: '💡' },
+            { key: 'shopping', icon: '🛍️' },
+            { key: 'medicine', icon: '💊' },
+            { key: 'fun', icon: '🎉' }
+        ];
+
+        // Smart chat responses (keeping same as before)
+        function getSmartChatResponse(message) {
+            const msg = message.toLowerCase();
+            
+            if (msg.includes('save') || msg.includes('saving') || msg.includes('बचत') || msg.includes('ಉಳಿತಾಯ') || msg.includes('சேமிப்பு') || msg.includes('పొదుపు')) {
+                if (msg.includes('how') || msg.includes('start')) {
+                    return '💰 To start saving: (1) Use 50-30-20 rule: 50% needs, 30% wants, 20% savings. (2) Auto-transfer to savings on salary day. (3) Track expenses. (4) Build 6-month emergency fund!';
+                }
+                return '💡 Try 50-30-20 budget! Save ₹100/day = ₹36,500/year! Check Learn tab for Smart Savings module.';
+            }
+            
+            if (msg.includes('budget')) {
+                return '📊 Budget tips: (1) List ALL expenses in My Money tab. (2) Separate needs vs wants. (3) Set limits. (4) Review weekly. Budget = control!';
+            }
+            
+            if (msg.includes('emergency')) {
+                return '🆘 Emergency Fund: Save 6 months expenses. If ₹15k/month, target ₹90k. Keep in savings account. Protects from loans!';
+            }
+            
+            if (msg.includes('loan')) {
+                return '💳 Loan tips: (1) Avoid high interest (>15%). (2) Total EMI max 40% income. (3) Pay extra to finish faster. (4) Never for depreciating items!';
+            }
+            
+            if (msg.includes('insurance')) {
+                return '🛡️ Two must-haves: (1) Health insurance ₹5-10L cover. (2) Term life 10-15x income. Insurance = protection not investment!';
+            }
+            
+            if (msg.includes('left') || msg.includes('remain')) {
+                const total = state.expenses.reduce((sum, exp) => sum + exp.amount, 0);
+                const remaining = state.budget - total;
+                return `💵 You spent ₹${total.toLocaleString()} of ₹${state.budget.toLocaleString()}. Remaining: ₹${remaining.toLocaleString()}!`;
+            }
+            
+            return '🤖 I can help with: Savings, Budgets, Investments, Insurance, Loans, Emergency Planning. Ask anything specific!';
+        }
+
+        function getCrisisResponse(situation) {
+            const s = situation.toLowerCase();
+            let response = '<div class="success-box"><h3 style="color: #166534; margin-bottom: 15px;">🆘 Here\'s How to Get Help:</h3><ul style="line-height: 1.8; color: #15803d; padding-left: 20px;">';
+            
+            if (s.includes('job') || s.includes('नौकरी') || s.includes('ಉದ್ಯೋಗ') || s.includes('வேலை') || s.includes('ఉద్యోగం')) {
+                response += '<li><strong>Emergency:</strong> Use emergency fund. Apply unemployment benefits.</li>';
+                response += '<li><strong>Government:</strong> MGNREGA (100 days work), PM-SVANidhi scheme.</li>';
+                response += '<li><strong>Skills:</strong> Free PMKVY training centers.</li>';
+                response += '<li><strong>Income:</strong> Gig work (Swiggy, Zomato), online tutoring.</li>';
+            } else if (s.includes('medical') || s.includes('बीमारी') || s.includes('ಅನಾರೋಗ್ಯ')) {
+                response += '<li><strong>Government Hospitals:</strong> Much cheaper! Quality care at low cost.</li>';
+                response += '<li><strong>Ayushman Bharat:</strong> Free ₹5L treatment for eligible families.</li>';
+                response += '<li><strong>Generic Medicines:</strong> 50-80% cheaper at Jan Aushadhi!</li>';
+                response += '<li><strong>Crowdfunding:</strong> Ketto, Milaap for medical emergencies.</li>';
+            } else {
+                response += '<li>PM-KISAN: ₹6,000/year for farmers</li>';
+                response += '<li>Ayushman Bharat: ₹5L health cover</li>';
+                response += '<li>MUDRA Loan: Up to ₹10L business</li>';
+                response += '<li>Contact local NGOs, community centers</li>';
+            }
+            
+            response += '</ul><div style="margin-top: 15px; padding: 12px; background: #fef2f2; border-radius: 8px;"><p style="color: #991b1b; font-weight: bold;">📞 Helplines: Banking 1800-180-1551, Ayushman 14555</p></div></div>';
+            return response;
+        }
+
+        function render() {
+            const T = translations[state.lang];
+            const app = document.getElementById('app');
+            const lessonsData = getLessonsData(state.lang);
+            
+            if (state.screen === 'welcome') {
+                app.innerHTML = `
+                    <div class="container">
+                        <div class="card">
+                            <div class="emoji">💰</div>
+                            <h1>${T.app}</h1>
+                            <p style="text-align: center; color: #6b7280; font-size: 1.1rem; margin-bottom: 20px;">${T.tagline}</p>
+                            
+                            <input type="text" id="nameInput" placeholder="${T.name}" value="${state.name}">
+                            
+                            <select id="langSelect">
+                                <option value="en">🇬🇧 English</option>
+                                <option value="hi">🇮🇳 हिंदी (Hindi)</option>
+                                <option value="kn">🇮🇳 ಕನ್ನಡ (Kannada)</option>
+                                <option value="ta">🇮🇳 தமிழ் (Tamil)</option>
+                                <option value="te">🇮🇳 తెలుగు (Telugu)</option>
+                            </select>
+                            
+                            <button onclick="startApp()">${T.start}</button>
+                        </div>
+                    </div>
+                `;
+                document.getElementById('langSelect').value = state.lang;
+                document.getElementById('langSelect').onchange = (e) => {
+                    state.lang = e.target.value;
+                    render();
+                };
+            } else {
+                app.innerHTML = `
+                    <div class="header">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <div>
+                                <h2 style="font-size: 1.5rem; margin-bottom: 5px;">${T.app}</h2>
+                                <p style="font-size: 0.9rem;">${T.welcome}, ${state.name}!</p>
+                            </div>
+                            <select id="langSelectMain" style="width: auto; padding: 8px; background: rgba(255,255,255,0.2); color: white; border: 2px solid white; font-weight: bold;">
+                                <option value="en">EN</option>
+                                <option value="hi">हिं</option>
+                                <option value="kn">ಕನ್</option>
+                                <option value="ta">த</option>
+                                <option value="te">తె</option>
+                            </select>
+                        </div>
+                        <div class="stats">
+                            <div class="stat-box">
+                                <div style="font-size: 0.7rem; font-weight: bold;">⭐ ${T.pts}</div>
+                                <div style="font-size: 1.2rem; font-weight: bold;">${state.points}</div>
+                            </div>
+                            <div class="stat-box">
+                                <div style="font-size: 0.7rem; font-weight: bold;">⚡ ${T.level}</div>
+                                <div style="font-size: 1.2rem; font-weight: bold;">${state.level}</div>
+                            </div>
+                            <div class="stat-box">
+                                <div style="font-size: 0.7rem; font-weight: bold;">🔥 ${T.streak}</div>
+                                <div style="font-size: 1.2rem; font-weight: bold;">${state.streak}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="container pb-nav" id="mainContent"></div>
+                    
+                    <div class="bottom-nav">
+                        <div class="nav-item ${state.screen === 'home' ? 'active' : ''}" onclick="changeScreen('home')">
+                            <div style="font-size: 1.5rem;">🏠</div>
+                            <div style="font-size: 0.7rem; font-weight: bold;">${T.home}</div>
+                        </div>
+                        <div class="nav-item ${state.screen === 'expenses' ? 'active' : ''}" onclick="changeScreen('expenses')">
+                            <div style="font-size: 1.5rem;">📊</div>
+                            <div style="font-size: 0.7rem; font-weight: bold;">${T.spend}</div>
+                        </div>
+                        <div class="nav-item ${state.screen === 'learn' ? 'active' : ''}" onclick="changeScreen('learn')">
+                            <div style="font-size: 1.5rem;">📚</div>
+                            <div style="font-size: 0.7rem; font-weight: bold;">${T.learn}</div>
+                        </div>
+                        <div class="nav-item ${state.screen === 'help' ? 'active' : ''}" onclick="changeScreen('help')">
+                            <div style="font-size: 1.5rem;">🆘</div>
+                            <div style="font-size: 0.7rem; font-weight: bold;">${T.help}</div>
+                        </div>
+                        <div class="nav-item ${state.screen === 'chat' ? 'active' : ''}" onclick="changeScreen('chat')">
+                            <div style="font-size: 1.5rem;">💬</div>
+                            <div style="font-size: 0.7rem; font-weight: bold;">${T.ask}</div>
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('langSelectMain').value = state.lang;
+                document.getElementById('langSelectMain').onchange = (e) => {
+                    state.lang = e.target.value;
+                    render();
+                };
+                
+                renderScreen(T, lessonsData);
+            }
+        }
+
+        function renderScreen(T, lessonsData) {
+            const content = document.getElementById('mainContent');
+            
+            if (state.screen === 'home') {
+                content.innerHTML = `
+                    <div class="grid">
+                        <div class="grid-item" onclick="changeScreen('expenses')">
+                            <div style="font-size: 2.5rem; margin-bottom: 10px;">📊</div>
+                            <div style="font-weight: bold;">${T.spend}</div>
+                        </div>
+                        <div class="grid-item" onclick="changeScreen('learn')">
+                            <div style="font-size: 2.5rem; margin-bottom: 10px;">📚</div>
+                            <div style="font-weight: bold;">${T.learn}</div>
+                        </div>
+                        <div class="grid-item" onclick="changeScreen('help')">
+                            <div style="font-size: 2.5rem; margin-bottom: 10px;">🆘</div>
+                            <div style="font-weight: bold;">${T.help}</div>
+                        </div>
+                        <div class="grid-item" onclick="changeScreen('chat')">
+                            <div style="font-size: 2.5rem; margin-bottom: 10px;">💬</div>
+                            <div style="font-weight: bold;">${T.ask}</div>
+                        </div>
+                    </div>
+                `;
+            } else if (state.screen === 'expenses') {
+                const totalSpent = state.expenses.reduce((sum, exp) => sum + exp.amount, 0);
+                const remaining = state.budget - totalSpent;
+                
+                content.innerHTML = `
+                    <div class="card">
+                        <h2>${T.spend}</h2>
+                        
+                        <div class="success-box">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <div>
+                                    <div style="font-size: 0.9rem; color: #6b7280;">${T.total}</div>
+                                    <div style="font-size: 1.5rem; font-weight: bold; color: #f97316;">₹${totalSpent.toLocaleString()}</div>
+                                </div>
+                                <div style="text-align: right;">
+                                    <div style="font-size: 0.9rem; color: #6b7280;">${T.remaining}</div>
+                                    <div style="font-size: 1.5rem; font-weight: bold; color: ${remaining >= 0 ? '#22c55e' : '#ef4444'};">₹${Math.abs(remaining).toLocaleString()}</div>
+                                </div>
+                            </div>
+                            <div style="font-size: 0.8rem; color: #6b7280;">${T.budget}: ₹${state.budget.toLocaleString()}</div>
+                        </div>
+                        
+                        ${state.expenses.length === 0 ? `
+                            <div style="text-align: center; padding: 40px 20px; color: #9ca3af;">
+                                <div style="font-size: 3rem; margin-bottom: 15px;">📊</div>
+                                <p style="font-weight: bold;">${T.noExpenses}</p>
+                            </div>
+                        ` : state.expenses.map(exp => `
+                            <div class="expense-item">
+                                <div style="display: flex; align-items: center; gap: 15px;">
+                                    <span style="font-size: 2rem;">${exp.icon}</span>
+                                    <div>
+                                        <div style="font-weight: bold;">${exp.category}</div>
+                                        <div style="color: #6b7280; font-size: 0.9rem;">₹${exp.amount.toLocaleString()}</div>
+                                    </div>
+                                </div>
+                                <button class="delete-btn" onclick="deleteExpense(${exp.id})">${T.delete}</button>
+                            </div>
+                        `).join('')}
+                        
+                        ${!state.showAddExpense ? `
+                            <button onclick="toggleAddExpense(true)">${T.add}</button>
+                        ` : `
+                            <div style="background: #fff7ed; padding: 20px; border-radius: 15px; border: 2px solid #fdba74; margin-top: 20px;">
+                                <h3 style="margin-bottom: 15px; font-size: 1.1rem;">${T.whatBuy}</h3>
+                                <div class="grid-3">
+                                    ${categories.map(cat => `
+                                        <div class="category-btn ${state.newExpense.category === T[cat.key] ? 'selected' : ''}" onclick="selectCategory('${cat.key}', '${cat.icon}')">
+                                            <div style="font-size: 2rem; margin-bottom: 5px;">${cat.icon}</div>
+                                            <div style="font-size: 0.8rem; font-weight: bold;">${T[cat.key]}</div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                                
+                                <h3 style="margin: 20px 0 10px; font-size: 1.1rem;">${T.howMuch}</h3>
+                                <input type="number" id="expenseAmount" placeholder="500" value="${state.newExpense.amount}">
+                                
+                                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                                    <button onclick="addExpense()" style="flex: 1;">${T.save}</button>
+                                    <button onclick="toggleAddExpense(false)" style="flex: 1; background: #6b7280;">${T.cancel}</button>
+                                </div>
+                            </div>
+                        `}
+                    </div>
+                `;
+            } else if (state.screen === 'chat') {
+                content.innerHTML = `
+                    <div class="card">
+                        <h2>${T.chat}</h2>
+                        
+                        <div class="chat-container" id="chatContainer">
+                            ${state.chatMessages.length === 0 ? `
+                                <div style="text-align: center; padding: 60px 20px; color: #9ca3af;">
+                                    <div style="font-size: 3rem; margin-bottom: 15px;">💬</div>
+                                    <p style="font-weight: bold;">Ask me anything about money!</p>
+                                </div>
+                            ` : state.chatMessages.map(msg => `
+                                <div class="chat-message ${msg.from}">
+                                    <div class="chat-bubble ${msg.from}">${msg.text}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <div class="chat-input-container">
+                            <input type="text" id="chatInput" placeholder="${T.type}">
+                            <button onclick="sendMessage()">${T.send}</button>
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('chatInput').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') sendMessage();
+                });
+            } else if (state.screen === 'help') {
+                content.innerHTML = `
+                    <div class="card">
+                        <h2>${T.crisis}</h2>
+                        
+                        <div class="alert-box">
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                                <span style="font-size: 2rem;">🆘</span>
+                                <h3 style="font-size: 1.2rem; color: #991b1b;">We're here to help!</h3>
+                            </div>
+                            <p style="color: #b91c1c; line-height: 1.5;">Describe your financial crisis and get help.</p>
+                        </div>
+                        
+                        <textarea id="crisisInput" placeholder="${T.describe}"></textarea>
+                        <button onclick="submitCrisis()">${T.submit}</button>
+                        
+                        <div id="crisisResponse"></div>
+                    </div>
+                `;
+            } else if (state.screen === 'learn') {
+                content.innerHTML = `
+                    <div class="card">
+                        <h2>${T.learn}</h2>
+                        ${lessonsData.modules.map(m => `
+                            <div class="grid-item" onclick="openModule(${m.id})" style="text-align: left; margin-bottom: 15px;">
+                                <div style="display: flex; align-items: center; gap: 15px;">
+                                    <span style="font-size: 2.5rem;">${m.icon}</span>
+                                    <div>
+                                        <div style="font-weight: bold; font-size: 1.1rem;">${m.title}</div>
+                                        <div style="color: #6b7280; font-size: 0.9rem;">${m.lessons.length} ${T.lessons}</div>
+                                    </div>
+                                    <span style="margin-left: auto; font-size: 1.5rem;">→</span>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else if (state.screen === 'lesson' && state.currentModule) {
+                const module = lessonsData.modules.find(m => m.id === state.currentModule);
+                const lesson = module.lessons[state.lessonIndex];
+                
+                content.innerHTML = `
+                    <button class="back-btn" onclick="changeScreen('learn')">${T.back}</button>
+                    <div class="card">
+                        <div class="emoji">${module.icon}</div>
+                        <h2 style="text-align: center; margin-bottom: 10px;">${module.title}</h2>
+                        <p style="text-align: center; color: #6b7280; margin-bottom: 20px;">${T.lesson} ${state.lessonIndex + 1} ${T.of} ${module.lessons.length}</p>
+                        
+                        ${state.score === null ? `
+                            <div class="lesson-card">
+                                <h3 style="margin-bottom: 15px; font-size: 1.2rem;">${lesson.title}</h3>
+                                <p style="line-height: 1.6; color: #374151;">${lesson.content}</p>
+                            </div>
+                            
+                            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                                <button onclick="prevLesson()" ${state.lessonIndex === 0 ? 'disabled' : ''}>${T.prev}</button>
+                                ${state.lessonIndex < module.lessons.length - 1 
+                                    ? `<button onclick="nextLesson()">${T.next}</button>`
+                                    : `<button onclick="startQuiz()">🎯 ${T.quiz}</button>`
+                                }
+                            </div>
+                        ` : `
+                            <div style="text-align: center; padding: 30px; background: ${state.score >= 70 ? '#f0fdf4' : '#fff7ed'}; border-radius: 15px; border: 2px solid ${state.score >= 70 ? '#86efac' : '#fdba74'};">
+                                <div style="font-size: 3rem; margin-bottom: 15px;">${state.score >= 70 ? '🎉' : '📚'}</div>
+                                <h2 style="font-size: 2rem; margin-bottom: 10px;">${T.score}: ${state.score}%</h2>
+                                <p style="font-size: 1.2rem; margin-bottom: 20px;">${state.score >= 70 ? 'Excellent!' : 'Good try!'}</p>
+                                <button onclick="changeScreen('learn')">Done</button>
+                            </div>
+                        `}
+                    </div>
+                `;
+            } else if (state.screen === 'quiz' && state.currentModule) {
+                const module = lessonsData.modules.find(m => m.id === state.currentModule);
+                
+                content.innerHTML = `
+                    <button class="back-btn" onclick="backToLesson()">${T.back}</button>
+                    <div class="card">
+                        <h2 style="margin-bottom: 20px;">${T.quiz}</h2>
+                        ${module.quiz.map((q, i) => `
+                            <div style="margin-bottom: 25px;">
+                                <p style="font-weight: bold; margin-bottom: 12px;">Q${i+1}: ${q.q}</p>
+                                ${q.options.map((opt, j) => `
+                                    <div class="quiz-option ${state.quizAnswers[i] === j ? 'selected' : ''}" onclick="selectAnswer(${i}, ${j})">
+                                        ${opt}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `).join('')}
+                        <button onclick="submitQuiz()" style="background: #22c55e;">Check Answers</button>
+                    </div>
+                `;
+            }
+        }
+
+        function startApp() {
+            const name = document.getElementById('nameInput').value.trim();
+            if (name) {
+                state.name = name;
+                state.screen = 'home';
+                render();
+            }
+        }
+
+        function changeScreen(screen) {
+            state.screen = screen;
+            render();
+        }
+
+        function toggleAddExpense(show) {
+            state.showAddExpense = show;
+            if (!show) state.newExpense = { category: '', amount: '', icon: '💰' };
+            render();
+        }
+
+        function selectCategory(key, icon) {
+            const T = translations[state.lang];
+            state.newExpense.category = T[key];
+            state.newExpense.icon = icon;
+            render();
+        }
+
+        function addExpense() {
+            const amount = document.getElementById('expenseAmount').value;
+            if (state.newExpense.category && amount && parseInt(amount) > 0) {
+                state.expenses.push({
+                    id: Date.now(),
+                    category: state.newExpense.category,
+                    icon: state.newExpense.icon,
+                    amount: parseInt(amount)
+                });
+                state.points += 2;
+                state.level = Math.floor(state.points / 100) + 1;
+                state.showAddExpense = false;
+                state.newExpense = { category: '', amount: '', icon: '💰' };
+                render();
+            }
+        }
+
+        function deleteExpense(id) {
+            state.expenses = state.expenses.filter(exp => exp.id !== id);
+            render();
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (message) {
+                state.chatMessages.push({ from: 'user', text: message });
+                
+                setTimeout(() => {
+                    const reply = getSmartChatResponse(message);
+                    state.chatMessages.push({ from: 'bot', text: reply });
+                    render();
+                    
+                    setTimeout(() => {
+                        const container = document.getElementById('chatContainer');
+                        if (container) container.scrollTop = container.scrollHeight;
+                    }, 100);
+                }, 600);
+                
+                input.value = '';
+                render();
+            }
+        }
+
+        function submitCrisis() {
+            const input = document.getElementById('crisisInput').value.trim();
+            const response = document.getElementById('crisisResponse');
+            
+            if (input) {
+                response.innerHTML = getCrisisResponse(input);
+            }
+        }
+
+        function openModule(id) {
+            state.currentModule = id;
+            state.lessonIndex = 0;
+            state.score = null;
+            state.screen = 'lesson';
+            render();
+        }
+
+        function nextLesson() {
+            state.lessonIndex++;
+            state.points += 5;
+            state.level = Math.floor(state.points / 100) + 1;
+            render();
+        }
+
+        function prevLesson() {
+            if (state.lessonIndex > 0) {
+                state.lessonIndex--;
+                render();
+            }
+        }
+
+        function startQuiz() {
+            state.quizAnswers = {};
+            state.screen = 'quiz';
+            render();
+        }
+
+        function backToLesson() {
+            state.screen = 'lesson';
+            render();
+        }
+
+        function selectAnswer(questionIndex, optionIndex) {
+            state.quizAnswers[questionIndex] = optionIndex;
+            render();
+        }
+
+        function submitQuiz() {
+            const lessonsData = getLessonsData(state.lang);
+            const module = lessonsData.modules.find(m => m.id === state.currentModule);
+            let correct = 0;
+            module.quiz.forEach((q, i) => {
+                if (state.quizAnswers[i] === q.correct) correct++;
+            });
+            state.score = Math.round((correct / module.quiz.length) * 100);
+            state.points += state.score >= 70 ? 20 : 10;
+            state.level = Math.floor(state.points / 100) + 1;
+            state.screen = 'lesson';
+            render();
+        }
+
+        render();
+    </script>
+</body>
+</html>
